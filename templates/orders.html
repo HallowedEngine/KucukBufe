@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BüfeOS - Sipariş Listesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-orange-600 to-orange-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-clipboard-list text-3xl"></i>
+                    <h1 class="text-2xl font-bold">Sipariş Listesi</h1>
+                </div>
+                <a href="index.html" class="bg-white text-orange-600 px-4 py-2 rounded-lg font-semibold hover:bg-orange-50">
+                    <i class="fas fa-home mr-2"></i>Ana Panel
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+
+        <!-- Bilgi Kartı -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-lg">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
+                <div>
+                    <h3 class="font-semibold text-blue-800">Otomatik Sipariş Önerisi</h3>
+                    <p class="text-sm text-blue-700 mt-1">
+                        Stok adedi 10'un altında olan ürünler ve son 7 günlük satış verilerine göre önerilen sipariş miktarları.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sipariş Listesi -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold">
+                    <i class="fas fa-shopping-cart mr-2 text-orange-600"></i>Sipariş Verilecek Ürünler
+                </h2>
+                <button onclick="loadOrderList()" class="text-orange-600 hover:text-orange-800">
+                    <i class="fas fa-sync-alt mr-1"></i>Yenile
+                </button>
+            </div>
+
+            <div id="order-list" class="space-y-3">
+                <!-- Dinamik yüklenecek -->
+            </div>
+
+            <div class="mt-6 pt-6 border-t">
+                <button onclick="copyToWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-lg text-lg font-semibold hover:bg-green-600 flex items-center justify-center">
+                    <i class="fab fa-whatsapp text-2xl mr-3"></i>
+                    WhatsApp'a Kopyala & Gönder
+                </button>
+            </div>
+        </div>
+
+        <!-- WhatsApp Mesaj Önizleme -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold mb-3 flex items-center">
+                <i class="fas fa-eye mr-2 text-gray-600"></i>Mesaj Önizlemesi
+            </h3>
+            <div class="bg-gray-50 border border-gray-300 rounded-lg p-4">
+                <pre id="whatsapp-preview" class="text-sm whitespace-pre-wrap font-mono">Sipariş listesi yüklenecek...</pre>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">
+                <i class="fas fa-lightbulb mr-1"></i>
+                Bu mesaj otomatik olarak panonuza kopyalanacak ve toptancınıza WhatsApp'tan gönderebilirsiniz.
+            </p>
+        </div>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let orderData = [];
+
+        // Sipariş listesini yükle
+        async function loadOrderList() {
+            try {
+                const res = await fetch(`${API_URL}/orders/suggest?threshold=10`);
+                orderData = await res.json();
+
+                const orderListDiv = document.getElementById('order-list');
+
+                if (orderData.length === 0) {
+                    orderListDiv.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-check-circle text-6xl text-green-500 mb-3"></i>
+                            <p class="text-gray-600 font-semibold">Tüm ürünler yeterli!</p>
+                            <p class="text-sm text-gray-400">Şu an sipariş vermenize gerek yok.</p>
+                        </div>
+                    `;
+                } else {
+                    // Kategoriye göre grupla
+                    const grouped = groupByCategory(orderData);
+
+                    orderListDiv.innerHTML = Object.keys(grouped).map(category => `
+                        <div class="border-b pb-3 mb-3 last:border-b-0">
+                            <h4 class="font-semibold text-gray-700 mb-2 flex items-center">
+                                ${getCategoryIcon(category)} ${category}
+                            </h4>
+                            <div class="space-y-2">
+                                ${grouped[category].map(item => `
+                                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                                        <div class="flex-1">
+                                            <p class="font-medium text-sm">${item.product_name}</p>
+                                            <p class="text-xs text-gray-500">Mevcut: ${item.current_stock} adet</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-lg font-bold text-orange-600">${item.suggested_quantity} adet</p>
+                                            <p class="text-xs text-gray-500">Önerilen</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                updateWhatsAppPreview();
+
+            } catch (error) {
+                console.error('Sipariş listesi yüklenemedi:', error);
+                alert('❌ Sipariş listesi yüklenemedi!');
+            }
+        }
+
+        // Kategoriye göre grupla
+        function groupByCategory(items) {
+            return items.reduce((groups, item) => {
+                const category = item.category || 'Diğer';
+                if (!groups[category]) {
+                    groups[category] = [];
+                }
+                groups[category].push(item);
+                return groups;
+            }, {});
+        }
+
+        // Kategori ikonu
+        function getCategoryIcon(category) {
+            const icons = {
+                'Sigara': '🚬',
+                'İçecek': '🥤',
+                'Ekmek': '🥖',
+                'Atıştırmalık': '🍫',
+                'Sıcak İçecek': '☕',
+                'Diğer': '📦'
+            };
+            return icons[category] || '📦';
+        }
+
+        // WhatsApp mesaj önizlemesi
+        function updateWhatsAppPreview() {
+            const preview = document.getElementById('whatsapp-preview');
+
+            if (orderData.length === 0) {
+                preview.textContent = 'Sipariş verilecek ürün yok.';
+                return;
+            }
+
+            const today = new Date().toLocaleDateString('tr-TR');
+            let message = `📋 SİPARİŞ LİSTESİ (${today})\n\n`;
+
+            const grouped = groupByCategory(orderData);
+
+            Object.keys(grouped).forEach(category => {
+                message += `${getCategoryIcon(category)} *${category}*\n`;
+                grouped[category].forEach(item => {
+                    message += `  • ${item.product_name}: ${item.suggested_quantity} adet\n`;
+                });
+                message += '\n';
+            });
+
+            message += `Toplam ${orderData.length} çeşit ürün\n\n`;
+            message += 'BüfeOS ile oluşturuldu 🏪';
+
+            preview.textContent = message;
+        }
+
+        // WhatsApp'a kopyala
+        async function copyToWhatsApp() {
+            if (orderData.length === 0) {
+                alert('Sipariş listesi boş!');
+                return;
+            }
+
+            const preview = document.getElementById('whatsapp-preview').textContent;
+
+            try {
+                await navigator.clipboard.writeText(preview);
+                alert('✅ Sipariş listesi kopyalandı!\n\nŞimdi WhatsApp\'ı açıp toptancınıza gönderin.');
+
+                // Mobilde WhatsApp'ı aç (opsiyonel)
+                if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+                    const waText = encodeURIComponent(preview);
+                    window.location.href = `whatsapp://send?text=${waText}`;
+                }
+            } catch (error) {
+                // Fallback: Manuel kopyalama
+                const textarea = document.createElement('textarea');
+                textarea.value = preview;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Sipariş listesi kopyalandı!');
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrderList();
+        });
+    </script>
+</body>
+</html>

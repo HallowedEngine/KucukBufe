@@ -1,0 +1,17 @@
+# BüfeOS - Python Dependencies
+
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.12.1
+
+# Utilities
+python-multipart==0.0.6
+pydantic==2.5.0
+python-dotenv==1.0.0
+
+# Development
+pytest==7.4.3

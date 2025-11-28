@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BüfeOS - Hızlı Satış</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .product-btn {
+            min-height: 80px;
+            transition: all 0.2s;
+        }
+        .product-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-green-600 to-green-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-cash-register text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Hızlı Satış</h1>
+                        <p class="text-green-200 text-sm">Dokunarak sat</p>
+                    </div>
+                </div>
+                <a href="index.html" class="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50">
+                    <i class="fas fa-home mr-2"></i>Ana Panel
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+
+        <!-- Barkod Arama -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-barcode text-2xl text-gray-400"></i>
+                <input
+                    type="text"
+                    id="barcode-input"
+                    placeholder="Barkod okut veya ara..."
+                    class="flex-1 text-lg border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-green-500 focus:outline-none"
+                    autofocus
+                >
+                <button onclick="searchBarcode()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kategori Seçici -->
+        <div class="mb-6">
+            <div class="flex overflow-x-auto space-x-2 pb-2">
+                <button onclick="filterProducts('all')" class="category-btn px-4 py-2 bg-green-600 text-white rounded-lg whitespace-nowrap font-semibold">
+                    Tümü
+                </button>
+                <button onclick="filterProducts('Sigara')" class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300">
+                    🚬 Sigara
+                </button>
+                <button onclick="filterProducts('İçecek')" class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300">
+                    🥤 İçecek
+                </button>
+                <button onclick="filterProducts('Ekmek')" class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300">
+                    🥖 Ekmek
+                </button>
+                <button onclick="filterProducts('Atıştırmalık')" class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300">
+                    🍫 Atıştırmalık
+                </button>
+                <button onclick="filterProducts('Sıcak İçecek')" class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300">
+                    ☕ Sıcak İçecek
+                </button>
+            </div>
+        </div>
+
+        <!-- Ürün Listesi -->
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+            <!-- Dinamik yüklenecek -->
+        </div>
+
+        <!-- Sepet -->
+        <div class="bg-white rounded-xl shadow-lg p-6 sticky bottom-0">
+            <h3 class="text-lg font-semibold mb-3 flex items-center justify-between">
+                <span>🛒 Sepet</span>
+                <button onclick="clearCart()" class="text-red-500 text-sm hover:text-red-700">Temizle</button>
+            </h3>
+            <div id="cart-items" class="space-y-2 mb-4 max-h-40 overflow-y-auto">
+                <p class="text-gray-400 text-sm">Sepet boş</p>
+            </div>
+            <div class="border-t pt-3">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xl font-bold">Toplam:</span>
+                    <span id="cart-total" class="text-2xl font-bold text-green-600">0.00 ₺</span>
+                </div>
+                <button
+                    id="checkout-btn"
+                    onclick="checkout()"
+                    disabled
+                    class="w-full bg-green-600 text-white py-4 rounded-lg text-xl font-bold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                    <i class="fas fa-check mr-2"></i>Satışı Tamamla
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let products = [];
+        let cart = [];
+        let currentCategory = 'all';
+
+        // Ürünleri yükle
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API_URL}/products`);
+                products = await res.json();
+                displayProducts();
+            } catch (error) {
+                console.error('Ürünler yüklenemedi:', error);
+            }
+        }
+
+        // Ürünleri göster
+        function displayProducts() {
+            const grid = document.getElementById('products-grid');
+            const filtered = currentCategory === 'all'
+                ? products
+                : products.filter(p => p.category === currentCategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-8">Ürün bulunamadı</p>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(product => `
+                <button
+                    onclick="addToCart(${product.id})"
+                    class="product-btn bg-white rounded-lg shadow p-4 hover:shadow-lg ${product.stock === 0 ? 'opacity-50' : ''}"
+                    ${product.stock === 0 ? 'disabled' : ''}
+                >
+                    <div class="text-left">
+                        <h4 class="font-semibold text-sm mb-1 line-clamp-2">${product.name}</h4>
+                        <p class="text-xs text-gray-500 mb-2">${product.category}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-green-600">${product.sell_price.toFixed(2)} ₺</span>
+                            <span class="text-xs ${product.stock < 5 ? 'text-red-500' : 'text-gray-400'}">
+                                ${product.stock === 0 ? 'Bitti' : 'Stok: ' + product.stock}
+                            </span>
+                        </div>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        // Kategori filtrele
+        function filterProducts(category) {
+            currentCategory = category;
+            displayProducts();
+
+            // Aktif butonu vurgula
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = 'category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-lg whitespace-nowrap hover:bg-gray-300';
+            });
+            event.target.className = 'category-btn px-4 py-2 bg-green-600 text-white rounded-lg whitespace-nowrap font-semibold';
+        }
+
+        // Barkod ara
+        function searchBarcode() {
+            const barcode = document.getElementById('barcode-input').value.trim();
+            if (!barcode) return;
+
+            const product = products.find(p => p.barcode === barcode);
+            if (product) {
+                addToCart(product.id);
+                document.getElementById('barcode-input').value = '';
+            } else {
+                alert('Ürün bulunamadı!');
+            }
+        }
+
+        // Enter tuşu ile arama
+        document.getElementById('barcode-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchBarcode();
+            }
+        });
+
+        // Sepete ekle
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || product.stock === 0) return;
+
+            // Sepette var mı kontrol et
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                if (existingItem.quantity < product.stock) {
+                    existingItem.quantity++;
+                } else {
+                    alert('Stok yetersiz!');
+                    return;
+                }
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.sell_price,
+                    quantity: 1,
+                    maxStock: product.stock
+                });
+            }
+
+            updateCart();
+        }
+
+        // Sepeti güncelle
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-400 text-sm">Sepet boş</p>';
+                cartTotal.textContent = '0.00 ₺';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                return `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                        <div class="flex-1">
+                            <span class="text-sm font-medium">${item.name}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateQuantity(${index}, -1)" class="bg-gray-300 hover:bg-gray-400 w-6 h-6 rounded flex items-center justify-center">-</button>
+                            <span class="text-sm font-bold w-6 text-center">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="bg-gray-300 hover:bg-gray-400 w-6 h-6 rounded flex items-center justify-center">+</button>
+                            <span class="text-sm font-bold text-green-600 w-16 text-right">${itemTotal.toFixed(2)} ₺</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            cartTotal.textContent = `${total.toFixed(2)} ₺`;
+            checkoutBtn.disabled = false;
+        }
+
+        // Adet güncelle
+        function updateQuantity(index, change) {
+            const item = cart[index];
+            const newQty = item.quantity + change;
+
+            if (newQty <= 0) {
+                removeFromCart(index);
+            } else if (newQty <= item.maxStock) {
+                item.quantity = newQty;
+                updateCart();
+            } else {
+                alert('Stok yetersiz!');
+            }
+        }
+
+        // Sepetten çıkar
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Sepeti temizle
+        function clearCart() {
+            if (cart.length === 0) return;
+            if (confirm('Sepeti temizlemek istediğinize emin misiniz?')) {
+                cart = [];
+                updateCart();
+            }
+        }
+
+        // Satışı tamamla
+        async function checkout() {
+            if (cart.length === 0) return;
+
+            try {
+                // Her ürün için satış kaydı oluştur
+                for (const item of cart) {
+                    const res = await fetch(`${API_URL}/sales`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            product_id: item.id,
+                            quantity: item.quantity
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const error = await res.json();
+                        throw new Error(error.detail || 'Satış kaydedilemedi');
+                    }
+                }
+
+                // Başarılı
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                alert(`✅ Satış tamamlandı!\nToplam: ${total.toFixed(2)} ₺`);
+
+                // Sepeti temizle ve ürünleri yeniden yükle
+                cart = [];
+                updateCart();
+                loadProducts();
+
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

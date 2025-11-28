@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BüfeOS - Ürünler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-boxes text-3xl"></i>
+                    <h1 class="text-2xl font-bold">Ürün Yönetimi</h1>
+                </div>
+                <a href="index.html" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50">
+                    <i class="fas fa-home mr-2"></i>Ana Panel
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+
+        <!-- Aksiyonlar -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div class="flex flex-wrap gap-3">
+                <button onclick="showAddProductModal()" class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700">
+                    <i class="fas fa-plus mr-2"></i>Yeni Ürün Ekle
+                </button>
+                <button onclick="showUploadModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+                    <i class="fas fa-file-csv mr-2"></i>CSV Yükle
+                </button>
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Ürün ara..."
+                    class="flex-1 min-w-[200px] border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none"
+                    oninput="searchProducts()"
+                >
+            </div>
+        </div>
+
+        <!-- Ürün Tablosu -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Ürün Adı</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Barkod</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Kategori</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Stok</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Alış</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Satış</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">Kar</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table">
+                        <!-- Dinamik yüklenecek -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- CSV Yükle Modal -->
+    <div id="upload-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold">CSV Dosyası Yükle</h3>
+                <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
+                    <p class="font-semibold mb-2">CSV Format:</p>
+                    <code class="text-xs">urun_adi,barkod,stok,satis_fiyat,alis_fiyat,kategori</code>
+                    <p class="mt-2 text-xs text-gray-600">Örnek: Simit,8690123456,50,5.0,3.0,Ekmek</p>
+                </div>
+                <input type="file" id="csv-file" accept=".csv" class="w-full border-2 border-gray-300 rounded-lg p-3">
+                <button onclick="uploadCSV()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
+                    <i class="fas fa-upload mr-2"></i>Yükle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ürün Ekle Modal -->
+    <div id="add-product-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold">Yeni Ürün Ekle</h3>
+                <button onclick="closeAddProductModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form onsubmit="addProduct(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Ürün Adı *</label>
+                    <input type="text" id="product-name" required class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Barkod</label>
+                    <input type="text" id="product-barcode" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Kategori *</label>
+                    <select id="product-category" required class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                        <option value="Ekmek">Ekmek</option>
+                        <option value="İçecek">İçecek</option>
+                        <option value="Sigara">Sigara</option>
+                        <option value="Atıştırmalık">Atıştırmalık</option>
+                        <option value="Sıcak İçecek">Sıcak İçecek</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Stok *</label>
+                        <input type="number" id="product-stock" required min="0" value="0" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Alış Fiyatı *</label>
+                        <input type="number" id="product-cost" required min="0" step="0.01" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Satış Fiyatı *</label>
+                        <input type="number" id="product-sell" required min="0" step="0.01" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:border-purple-500 focus:outline-none">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+                    <i class="fas fa-plus mr-2"></i>Ürün Ekle
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let allProducts = [];
+
+        // Ürünleri yükle
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API_URL}/products`);
+                allProducts = await res.json();
+                displayProducts(allProducts);
+            } catch (error) {
+                console.error('Ürünler yüklenemedi:', error);
+            }
+        }
+
+        // Ürünleri göster
+        function displayProducts(products) {
+            const table = document.getElementById('products-table');
+            if (products.length === 0) {
+                table.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-400">Ürün bulunamadı</td></tr>';
+                return;
+            }
+
+            table.innerHTML = products.map(p => {
+                const profit = p.sell_price - p.cost_price;
+                const profitPercent = p.cost_price > 0 ? ((profit / p.cost_price) * 100).toFixed(1) : 0;
+                const stockColor = p.stock === 0 ? 'red' : p.stock < 5 ? 'orange' : p.stock < 10 ? 'yellow' : 'green';
+
+                return `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-3 text-sm font-medium">${p.name}</td>
+                        <td class="px-4 py-3 text-xs text-gray-500">${p.barcode || '-'}</td>
+                        <td class="px-4 py-3 text-xs">${p.category}</td>
+                        <td class="px-4 py-3">
+                            <span class="text-sm font-bold text-${stockColor}-600">${p.stock}</span>
+                        </td>
+                        <td class="px-4 py-3 text-sm">${p.cost_price.toFixed(2)} ₺</td>
+                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">${p.sell_price.toFixed(2)} ₺</td>
+                        <td class="px-4 py-3 text-sm font-semibold text-green-600">
+                            ${profit.toFixed(2)} ₺ <span class="text-xs">(${profitPercent}%)</span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <button onclick="updateStock(${p.id}, ${p.stock})" class="text-blue-600 hover:text-blue-800 mr-2" title="Stok Güncelle">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Ürün ara
+        function searchProducts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allProducts.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                (p.barcode && p.barcode.includes(query)) ||
+                p.category.toLowerCase().includes(query)
+            );
+            displayProducts(filtered);
+        }
+
+        // Stok güncelle
+        async function updateStock(productId, currentStock) {
+            const newStock = prompt(`Yeni stok adedi (Mevcut: ${currentStock}):`, currentStock);
+            if (newStock === null || newStock === '') return;
+
+            try {
+                const res = await fetch(`${API_URL}/products/${productId}/stock?stock=${parseInt(newStock)}`, {
+                    method: 'PUT'
+                });
+
+                if (res.ok) {
+                    alert('✅ Stok güncellendi!');
+                    loadProducts();
+                } else {
+                    alert('❌ Stok güncellenemedi!');
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+
+        // Yeni ürün ekle
+        async function addProduct(event) {
+            event.preventDefault();
+
+            const productData = {
+                name: document.getElementById('product-name').value,
+                barcode: document.getElementById('product-barcode').value || null,
+                category: document.getElementById('product-category').value,
+                stock: parseInt(document.getElementById('product-stock').value),
+                cost_price: parseFloat(document.getElementById('product-cost').value),
+                sell_price: parseFloat(document.getElementById('product-sell').value)
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                if (res.ok) {
+                    alert('✅ Ürün eklendi!');
+                    closeAddProductModal();
+                    loadProducts();
+                    event.target.reset();
+                } else {
+                    const error = await res.json();
+                    alert('❌ Hata: ' + (error.detail || 'Ürün eklenemedi'));
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+
+        // CSV yükle
+        async function uploadCSV() {
+            const fileInput = document.getElementById('csv-file');
+            if (!fileInput.files[0]) {
+                alert('Lütfen bir CSV dosyası seçin!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const res = await fetch(`${API_URL}/products/upload_csv`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    alert(`✅ CSV yüklendi!\n\nEklenen: ${result.added}\nGüncellenen: ${result.updated}\nHata: ${result.errors.length}`);
+                    closeUploadModal();
+                    loadProducts();
+                } else {
+                    alert('❌ Hata: ' + result.detail);
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+
+        // Modal kontrolleri
+        function showUploadModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('upload-modal').classList.add('hidden');
+            document.getElementById('csv-file').value = '';
+        }
+
+        function showAddProductModal() {
+            document.getElementById('add-product-modal').classList.remove('hidden');
+        }
+
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').classList.add('hidden');
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
