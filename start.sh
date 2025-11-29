@@ -7,10 +7,13 @@ echo ""
 cd backend
 
 # Veritabanını kontrol et
-if [ ! -f "../bufeos.db" ]; then
+if [ ! -f "bufeos.db" ]; then
     echo "📦 İlk kurulum tespit edildi!"
     echo "📊 Demo veri yükleniyor..."
     python demo_data.py
+    echo ""
+else
+    echo "✅ Veritabanı mevcut."
     echo ""
 fi
 

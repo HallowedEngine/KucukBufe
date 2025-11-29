@@ -11,10 +11,13 @@ echo.
 cd backend
 
 REM Veritabanı kontrolü
-if not exist "..\bufeos.db" (
+if not exist "bufeos.db" (
     echo 📦 İlk kurulum tespit edildi!
     echo 📊 Demo veri yükleniyor...
     python demo_data.py
+    echo.
+) else (
+    echo ✅ Veritabanı mevcut.
     echo.
 )
 

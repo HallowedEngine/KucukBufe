@@ -11,6 +11,13 @@ def load_demo_products():
     """Tipik büfe ürünlerini yükle"""
     db = SessionLocal()
 
+    # Zaten veri varsa atla
+    existing_count = db.query(Product).count()
+    if existing_count > 0:
+        print(f"⚠️  Zaten {existing_count} ürün var, demo veri yüklenmedi.")
+        db.close()
+        return
+
     # Ekmek & Unlu Mamüller
     products = [
         # Ekmek & Unlu Mamüller
@@ -83,9 +90,17 @@ def generate_demo_sales():
     """Son 7 günlük örnek satışlar oluştur"""
     db = SessionLocal()
 
+    # Zaten satış varsa atla
+    existing_sales = db.query(Sale).count()
+    if existing_sales > 0:
+        print(f"⚠️  Zaten {existing_sales} satış var, demo satış oluşturulmadı.")
+        db.close()
+        return
+
     products = db.query(Product).all()
     if not products:
         print("⚠️  Önce ürün ekleyin!")
+        db.close()
         return
 
     # Son 7 gün için satış oluştur
