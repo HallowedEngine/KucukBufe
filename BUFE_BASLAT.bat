@@ -10,12 +10,17 @@ echo.
 
 cd backend
 
-REM Veritabanı kontrolü
+REM Veritabanı kontrolü - İlk açılış
 if not exist "bufeos.db" (
     echo 📦 İlk kurulum tespit edildi!
     echo 📊 Demo veri yükleniyor...
     python demo_data.py
     echo.
+    echo ✅ Demo veriler yüklendi!
+    echo.
+
+    REM İlk açılışta hoş geldiniz sayfasını işaretle
+    echo first_time > .first_launch
 ) else (
     echo ✅ Veritabanı mevcut.
     echo.
