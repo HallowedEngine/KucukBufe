@@ -138,7 +138,24 @@
 
     <!-- JavaScript -->
     <script>
-        const API_URL = 'http://localhost:8000';
+        // API URL - Production ve local için otomatik
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000'
+            : window.location.origin;
+
+        // Authentication helper
+        function getAuthHeaders() {
+            const auth = localStorage.getItem('auth');
+            if (!auth) {
+                alert('⚠️ Lütfen önce giriş yapın!');
+                window.location.href = '/templates/login.html';
+                return null;
+            }
+            return {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/json'
+            };
+        }
 
         // Zaman göster
         function updateTime() {
@@ -153,9 +170,12 @@
 
         // Dashboard verilerini yükle
         async function loadDashboard() {
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
                 // Bugünkü satışlar
-                const salesRes = await fetch(`${API_URL}/dashboard/sales_today`);
+                const salesRes = await fetch(`${API_URL}/dashboard/sales_today`, { headers });
                 const salesData = await salesRes.json();
 
                 document.getElementById('today-sales').textContent = `${salesData.today_sales.toFixed(2)} ₺`;
@@ -176,7 +196,7 @@
                 }
 
                 // Az kalanlar
-                const lowStockRes = await fetch(`${API_URL}/dashboard/low_stock?threshold=10`);
+                const lowStockRes = await fetch(`${API_URL}/dashboard/low_stock?threshold=10`, { headers });
                 const lowStockData = await lowStockRes.json();
 
                 document.getElementById('low-stock-count').textContent = lowStockData.length;
@@ -197,7 +217,7 @@
                 }
 
                 // En çok satanlar
-                const topSellingRes = await fetch(`${API_URL}/dashboard/top_selling?days=1`);
+                const topSellingRes = await fetch(`${API_URL}/dashboard/top_selling?days=1`, { headers });
                 const topSellingData = await topSellingRes.json();
 
                 const topSellingList = document.getElementById('top-selling-list');
@@ -222,8 +242,11 @@
 
         // Son satışları yükle
         async function loadRecentSales() {
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
-                const res = await fetch(`${API_URL}/sales/recent?limit=10`);
+                const res = await fetch(`${API_URL}/sales/recent?limit=10`, { headers });
                 const sales = await res.json();
 
                 const tableBody = document.getElementById('recent-sales-table');
