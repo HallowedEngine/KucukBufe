@@ -113,15 +113,36 @@
 
     <!-- JavaScript -->
     <script>
-        const API_URL = 'http://localhost:8000';
+        // API URL - Production ve local için otomatik
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000'
+            : window.location.origin;
+
+        // Authentication helper
+        function getAuthHeaders() {
+            const auth = localStorage.getItem('auth');
+            if (!auth) {
+                alert('⚠️ Lütfen önce giriş yapın!');
+                window.location.href = '/templates/login.html';
+                return null;
+            }
+            return {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
         let products = [];
         let cart = [];
         let currentCategory = 'all';
 
         // Ürünleri yükle
         async function loadProducts() {
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
-                const res = await fetch(`${API_URL}/products`);
+                const res = await fetch(`${API_URL}/products`, { headers });
                 products = await res.json();
                 displayProducts();
             } catch (error) {
@@ -294,12 +315,15 @@
         async function checkout() {
             if (cart.length === 0) return;
 
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
                 // Her ürün için satış kaydı oluştur
                 for (const item of cart) {
                     const res = await fetch(`${API_URL}/sales`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({
                             product_id: item.id,
                             quantity: item.quantity
