@@ -145,13 +145,34 @@
 
     <!-- JavaScript -->
     <script>
-        const API_URL = 'http://localhost:8000';
+        // API URL - Production ve local için otomatik
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000'
+            : window.location.origin;
+
+        // Authentication helper
+        function getAuthHeaders() {
+            const auth = localStorage.getItem('auth');
+            if (!auth) {
+                alert('⚠️ Lütfen önce giriş yapın!');
+                window.location.href = '/templates/login.html';
+                return null;
+            }
+            return {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
         let allProducts = [];
 
         // Ürünleri yükle
         async function loadProducts() {
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
-                const res = await fetch(`${API_URL}/products`);
+                const res = await fetch(`${API_URL}/products`, { headers });
                 allProducts = await res.json();
                 displayProducts(allProducts);
             } catch (error) {
@@ -208,12 +229,16 @@
 
         // Stok güncelle
         async function updateStock(productId, currentStock) {
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const newStock = prompt(`Yeni stok adedi (Mevcut: ${currentStock}):`, currentStock);
             if (newStock === null || newStock === '') return;
 
             try {
                 const res = await fetch(`${API_URL}/products/${productId}/stock?stock=${parseInt(newStock)}`, {
-                    method: 'PUT'
+                    method: 'PUT',
+                    headers
                 });
 
                 if (res.ok) {
@@ -231,6 +256,9 @@
         async function addProduct(event) {
             event.preventDefault();
 
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const productData = {
                 name: document.getElementById('product-name').value,
                 barcode: document.getElementById('product-barcode').value || null,
@@ -243,7 +271,7 @@
             try {
                 const res = await fetch(`${API_URL}/products`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers,
                     body: JSON.stringify(productData)
                 });
 
@@ -263,6 +291,13 @@
 
         // CSV yükle
         async function uploadCSV() {
+            const auth = localStorage.getItem('auth');
+            if (!auth) {
+                alert('⚠️ Lütfen önce giriş yapın!');
+                window.location.href = '/templates/login.html';
+                return;
+            }
+
             const fileInput = document.getElementById('csv-file');
             if (!fileInput.files[0]) {
                 alert('Lütfen bir CSV dosyası seçin!');
@@ -275,6 +310,9 @@
             try {
                 const res = await fetch(`${API_URL}/products/upload_csv`, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${auth}`
+                    },
                     body: formData
                 });
 
