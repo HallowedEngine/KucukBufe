@@ -10,7 +10,7 @@ from datetime import datetime
 import hashlib
 import secrets
 
-from database import Base
+from database_v2 import Base, get_db
 
 security = HTTPBasic()
 
@@ -116,7 +116,6 @@ def check_subscription(user: User):
 
 
 # --- DEPENDENCY ---
-from database import get_db
 
 def get_current_active_user(
     user: User = Depends(get_current_user)
