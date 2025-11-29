@@ -1,0 +1,232 @@
+═══════════════════════════════════════════════════════
+   📞 BüfeOS - Destek Bilgileri
+═══════════════════════════════════════════════════════
+
+🏪 BüfeOS Teknik Destek
+Versiyon: 1.0.0
+Son Güncelleme: Kasım 2024
+
+═══════════════════════════════════════════════════════
+   👨‍💻 GELİŞTİRİCİ İLETİŞİM
+═══════════════════════════════════════════════════════
+
+Ad Soyad:    [ADINIZ BURAYA]
+Telefon:     [+90 XXX XXX XX XX]
+WhatsApp:    [+90 XXX XXX XX XX]
+E-posta:     [email@domain.com]
+
+Website:     [www.bufeos.com]  (yakında)
+GitHub:      [github.com/kullanici/bufeos]
+
+
+═══════════════════════════════════════════════════════
+   🕐 DESTEK SAATLERİ
+═══════════════════════════════════════════════════════
+
+Pazartesi - Cuma:  09:00 - 18:00
+Cumartesi:         09:00 - 13:00
+Pazar:             Kapalı
+
+⚠️ ACİL DURUMLAR (Sistem çökmesi):
+   → WhatsApp mesaj atın, en kısa sürede döneriz!
+
+
+═══════════════════════════════════════════════════════
+   📋 DESTEK TALEBİ AÇARKEN
+═══════════════════════════════════════════════════════
+
+Lütfen şu bilgileri hazırlayın:
+
+1. ✅ Sorunun ne olduğu (detaylı açıklama)
+2. ✅ Hata mesajı (varsa ekran görüntüsü)
+3. ✅ Ne zaman başladı?
+4. ✅ Daha önce çalışıyor muydu?
+5. ✅ Son ne yaptınız? (ürün eklediniz, satış yaptınız, vb.)
+
+WhatsApp'tan ekran görüntüsü gönderebilirsiniz!
+
+
+═══════════════════════════════════════════════════════
+   🔥 SIKÇA SORULAN SORULAR
+═══════════════════════════════════════════════════════
+
+S1: İnternet olmadan çalışır mı?
+────────────────────────────────
+✅ EVET! BüfeOS tamamen offline çalışır.
+   İnternet sadece ilk kurulum için gerekli.
+
+
+S2: Verilerim güvende mi?
+─────────────────────────
+✅ EVET! Tüm veriler sadece sizin bilgisayarınızda.
+   Hiçbir veri internete gönderilmez.
+
+
+S3: Telefonda kullanabilir miyim?
+──────────────────────────────────
+✅ EVET! Aynı WiFi ağındaki telefonunuzdan erişebilirsiniz.
+   Detaylar: BUFECI_KILAVUZU.md
+
+
+S4: Lisans süresi var mı?
+─────────────────────────
+✅ Aylık veya yıllık abonelik:
+   - Aylık: 99 TL/ay
+   - Yıllık: 990 TL/yıl (2 ay bedava!)
+   - İlk 1 ay ücretsiz deneme
+
+
+S5: Birden fazla cihazda kullanabilir miyim?
+────────────────────────────────────────────
+✅ EVET! Aynı büfe için:
+   - 1 PC (ana sistem)
+   - Sınırsız telefon/tablet (okuma için)
+
+
+S6: Başka büfede de kullanabilir miyim?
+────────────────────────────────────────
+❌ HAYIR. Her büfe için ayrı lisans gerekli.
+   ✅ İkinci büfeye %50 indirim var!
+
+
+═══════════════════════════════════════════════════════
+   🆘 ACİL DURUM KONTAKTLARİ
+═══════════════════════════════════════════════════════
+
+Sistem Çöktü / Verilerim Gitti:
+───────────────────────────────
+1. PANİK YAPMAYIN! 😊
+2. Bilgisayarı KAPATMAYIN!
+3. Hemen beni ARAYIN: [TELEFON]
+4. WhatsApp: [WHATSAPP]
+
+→ Genellikle veriler kurtarılabilir!
+
+
+Yanlışlıkla Dosya Sildim:
+─────────────────────────
+1. Geri Dönüşüm Kutusu'na bakın
+2. Yoksa hemen arayın
+3. Yedek varsa geri yükleyebiliriz
+
+
+Satışları Yanlış Kaydettim:
+───────────────────────────
+1. Notunuza yazın (hangi satış, ne zaman)
+2. Bana ulaşın, düzeltelim
+3. Sonraki güncellemede "iptal" özelliği gelecek
+
+
+═══════════════════════════════════════════════════════
+   💳 ÖDEME & FATURA
+═══════════════════════════════════════════════════════
+
+Ödeme Yöntemleri:
+─────────────────
+✅ Banka Havalesi / EFT
+✅ Kredi Kartı (yakında)
+✅ Nakit
+
+Fatura:
+───────
+✅ E-Fatura (otomatik)
+📧 Email: [email@domain.com]
+
+
+Hesap Bilgileri:
+────────────────
+Banka:      [BANKA ADI]
+IBAN:       TR XX XXXX XXXX XXXX XXXX XXXX XX
+Ad Soyad:   [AD SOYAD]
+
+⚠️ Havale açıklamasına mutlaka büfe adınızı yazın!
+
+
+═══════════════════════════════════════════════════════
+   📈 GÜNCELLEMELER
+═══════════════════════════════════════════════════════
+
+Otomatik Güncelleme:
+────────────────────
+❌ YOK (henüz)
+
+Manuel Güncelleme:
+──────────────────
+✅ Size haber veririz (WhatsApp / E-posta)
+✅ Yeni dosyaları göndeririz
+✅ Kurulum yaparız (ücretsiz)
+
+
+Gelecek Özellikler (2024-2025):
+────────────────────────────────
+→ Satış iptal / düzeltme
+→ PDF raporlar (günlük/aylık)
+→ PWA (telefona uygulama olarak yükleme)
+→ Cloud backup (isteğe bağlı)
+→ Çoklu kullanıcı (çalışan hesabı)
+→ Kasa entegrasyonu
+
+
+═══════════════════════════════════════════════════════
+   💬 GERİ BİLDİRİM
+═══════════════════════════════════════════════════════
+
+Önerileriniz ve şikayetleriniz bizim için değerli!
+
+Beğendiğiniz özellikler:
+────────────────────────
+📧 [email@domain.com]
+📱 WhatsApp
+
+
+İyileştirme önerileri:
+──────────────────────
+"Şöyle bir özellik olsa süper olur!" derseniz:
+→ Mutlaka söyleyin!
+→ Ekleyebilirsek ekleriz!
+
+
+═══════════════════════════════════════════════════════
+   🎁 REFERANS PROGRAMI
+═══════════════════════════════════════════════════════
+
+Arkadaşınıza önerin, ikisi de kazansın!
+
+Siz:          1 ay ücretsiz kullanım
+Arkadaşınız:  İlk 3 ay %20 indirim
+
+Detaylar için: [WHATSAPP]
+
+
+═══════════════════════════════════════════════════════
+   📜 LİSANS & YASAL
+═══════════════════════════════════════════════════════
+
+Lisans Tipi: Ticari Yazılım Lisansı
+Telif Hakkı: © 2024 [ADINIZ]
+
+Kullanım Şartları:
+─────────────────
+✅ Bir büfe için kullanım hakkı
+❌ Kopyalama / dağıtma yasak
+❌ Kaynak kodunu değiştirme yasak
+✅ Güvenlik güncellemeleri ücretsiz
+
+
+═══════════════════════════════════════════════════════
+   ⭐ TEŞEKKüRLER!
+═══════════════════════════════════════════════════════
+
+BüfeOS'u seçtiğiniz için teşekkür ederiz!
+
+Amacımız küçük işletmelerin hayatını kolaylaştırmak.
+
+Sorunuz, öneriniz, şikayetiniz varsa çekinmeden yazın!
+
+Kolay gelsin! 🏪
+
+───────────────────────────────────────────────────────
+[ADINIZ]
+BüfeOS Geliştirici
+📱 [WHATSAPP] | 📧 [EMAIL]
+───────────────────────────────────────────────────────
