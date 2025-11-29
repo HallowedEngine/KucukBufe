@@ -10,40 +10,9 @@ from datetime import datetime
 import hashlib
 import secrets
 
-from database_v2 import Base, get_db
+from database_v2 import Base, get_db, User
 
 security = HTTPBasic()
-
-
-# --- MODELS ---
-
-class User(Base):
-    """Büfe Kullanıcıları - Multi-tenant için"""
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-
-    # Büfe Bilgileri
-    bufe_adi = Column(String, nullable=False)
-    telefon = Column(String)
-    adres = Column(String)
-
-    # Abonelik
-    is_active = Column(Boolean, default=True)
-    is_trial = Column(Boolean, default=True)  # İlk ay ücretsiz
-    trial_ends_at = Column(DateTime)  # Trial bitiş tarihi
-    subscription_type = Column(String, default="trial")  # trial, monthly, yearly
-
-    # Metadata
-    created_at = Column(DateTime, default=datetime.utcnow)
-    last_login = Column(DateTime)
-
-    # İlişkiler - Her kullanıcının kendi ürünleri/satışları
-    products = relationship("Product", back_populates="owner")
-    sales = relationship("Sale", back_populates="owner")
 
 
 # --- PASSWORD HASHING ---
