@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BüfeOS - Kayıt Ol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+            <i class="fas fa-store text-6xl text-blue-600 mb-4"></i>
+            <h1 class="text-3xl font-bold text-gray-800">BüfeOS'a Katıl</h1>
+            <p class="text-gray-600 mt-2">30 gün ücretsiz deneme başlat!</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="register-form" class="space-y-4">
+
+            <!-- Büfe Adı -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-store mr-2"></i>Büfe Adı *
+                </label>
+                <input
+                    type="text"
+                    id="bufe_adi"
+                    required
+                    placeholder="Örn: Ahmet'in Büfesi"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-envelope mr-2"></i>Email *
+                </label>
+                <input
+                    type="email"
+                    id="email"
+                    required
+                    placeholder="bufeniz@email.com"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Username -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-user mr-2"></i>Kullanıcı Adı *
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    required
+                    placeholder="ahmet_bufe"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Şifre -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-lock mr-2"></i>Şifre *
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    required
+                    placeholder="Güçlü bir şifre"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Telefon (Opsiyonel) -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-phone mr-2"></i>Telefon
+                </label>
+                <input
+                    type="tel"
+                    id="telefon"
+                    placeholder="+90 5XX XXX XX XX"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Adres (Opsiyonel) -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-map-marker-alt mr-2"></i>Adres
+                </label>
+                <input
+                    type="text"
+                    id="adres"
+                    placeholder="Örn: Kadıköy, İstanbul"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+            </div>
+
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105"
+            >
+                <i class="fas fa-rocket mr-2"></i>
+                Kayıt Ol - 30 Gün Ücretsiz!
+            </button>
+
+        </form>
+
+        <!-- Login Link -->
+        <div class="mt-6 text-center">
+            <p class="text-gray-600">
+                Zaten hesabınız var mı?
+                <a href="login.html" class="text-blue-600 font-semibold hover:underline">Giriş Yap</a>
+            </p>
+        </div>
+
+        <!-- Features -->
+        <div class="mt-8 pt-6 border-t">
+            <p class="text-xs text-gray-500 text-center mb-3">Kayıt olunca ne kazanırsınız:</p>
+            <div class="grid grid-cols-2 gap-3 text-xs text-gray-600">
+                <div class="flex items-center">
+                    <i class="fas fa-check text-green-500 mr-2"></i>
+                    30 gün ücretsiz
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check text-green-500 mr-2"></i>
+                    Sınırsız ürün
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check text-green-500 mr-2"></i>
+                    Sınırsız satış
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check text-green-500 mr-2"></i>
+                    7/24 destek
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const API_URL = window.location.origin;
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                bufe_adi: document.getElementById('bufe_adi').value,
+                telefon: document.getElementById('telefon').value || null,
+                adres: document.getElementById('adres').value || null
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`🎉 ${result.message}\n\nŞimdi giriş yapabilirsiniz!`);
+                    window.location.href = 'login.html';
+                } else {
+                    alert('❌ Hata: ' + result.detail);
+                }
+
+            } catch (error) {
+                alert('❌ Bağlantı hatası: ' + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>

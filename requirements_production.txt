@@ -1,0 +1,23 @@
+# BüfeOS Production Dependencies
+
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database - PostgreSQL için
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9  # PostgreSQL driver
+alembic==1.12.1
+
+# Utilities
+python-multipart==0.0.6
+pydantic==2.5.0
+pydantic[email]==2.5.0  # Email validation
+python-dotenv==1.0.0
+
+# Security
+passlib[bcrypt]==1.7.4  # Password hashing
+python-jose[cryptography]==3.3.0  # JWT tokens
+
+# Development (optional)
+pytest==7.4.3
